@@ -158,7 +158,8 @@ class HashTable:
             # delete 
             self.table[index] = self.table[index].head
             self.count -= 1
-            # TODO resize if loadfactor is < .2
+            if self.get_load_factor() < .3:
+                    self.resize(self.capacity // 2)
             return 
         
         # general case 
@@ -171,7 +172,8 @@ class HashTable:
                 prev.next = cur.next
                 cur.next = None
                 self.count-= 1
-                # TODO resize if loadfactor is < .2
+                if self.get_load_factor() < .3:
+                    self.resize(self.capacity // 2)
                 return
 
             prev = prev.next
@@ -213,12 +215,14 @@ class HashTable:
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
 
-        Implement this.
+        Implement this
         """
-        print(f'resizing to {new_capacity} ')
 
         # change capacity to new capacity 
-        self.capacity = new_capacity
+        if new_capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = new_capacity
         # create a new table with new capacity 
         old_table = self.table
         self.table = [None] * self.capacity
@@ -240,50 +244,36 @@ class HashTable:
 if __name__ == "__main__":
     
 
-    ht = HashTable(2)
-
-    ht.put('one', 1)
-    print(ht.table)
-    
-    ht.put('two', 2)
-    print(ht.table)
-
-
+    ht = HashTable(8)
     
     
-    # ht.put("line_1", "'Twas brillig, and the slithy toves")
-    # ht.put("line_2", "Did gyre and gimble in the wabe:")
-    # ht.put("line_3", "All mimsy were the borogoves,")
-    # ht.put("line_4", "And the mome raths outgrabe.")
-    # ht.put("line_5", '"Beware the Jabberwock, my son!')
-    # ht.put("line_6", "The jaws that bite, the claws that catch!")
-    # ht.put("line_7", "Beware the Jubjub bird, and shun")
-    # ht.put("line_8", 'The frumious Bandersnatch!"')
-    # ht.put("line_9", "He took his vorpal sword in hand;")
-    # ht.put("line_10", "Long time the manxome foe he sought--")
-    # ht.put("line_11", "So rested he by the Tumtum tree")
-    # ht.put("line_12", "And stood awhile in thought.")
-
-    # print(ht.table)
-    # ht.put("key-0", "new-val-0")
-    # print(ht.get("key-0"))
+    ht.put("line_1", "'Twas brillig, and the slithy toves")
+    ht.put("line_2", "Did gyre and gimble in the wabe:")
+    ht.put("line_3", "All mimsy were the borogoves,")
+    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_5", '"Beware the Jabberwock, my son!')
+    ht.put("line_6", "The jaws that bite, the claws that catch!")
+    ht.put("line_7", "Beware the Jubjub bird, and shun")
+    ht.put("line_8", 'The frumious Bandersnatch!"')
+    ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_10", "Long time the manxome foe he sought--")
+    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_12", "And stood awhile in thought.")
 
 
-    # print(ht.get('line_12'))
+    # Test storing beyond capacity
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # # Test storing beyond capacity
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
+    # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-    # # Test if data intact after resizing
-    # for i in range(1, 13):
-    #     print(ht.get(f"line_{i}"))
-
-    # print("")
+    print("")
