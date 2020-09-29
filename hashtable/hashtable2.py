@@ -7,12 +7,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-    def __repr__(self):
-        return f'HashTableEntry({self.key, self.value, self.next})'
-
 
 # Hash table can't have fewer than this many slots
-MIN_CAPACITY = 2
+MIN_CAPACITY = 8
 
 
 class HashTable:
@@ -29,8 +26,7 @@ class HashTable:
         else:
             self.capacity = capacity  
         
-        self.table = [None] * capacity 
-        self.count = 0 
+        self.table = [None] * capacity  
 
 
     def get_num_slots(self):
@@ -54,8 +50,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        load_factor = self.count / self.capacity
-        return load_factor
+        load_factor = .75
+        return self.capacity * load_factor
 
 
     def fnv1(self, key):
@@ -100,34 +96,10 @@ class HashTable:
 
         Implement this.
         """
-        # new entry
-        entry = HashTableEntry(key, value)
-        
-        # get the index of the key 
+        # Your code here
         index = self.hash_index(key)
-        # if index is empty add the entry 
-        if self.table[index] is None:
-            self.table[index] = entry
-            self.table[index].head = entry
-            self.count += 1
+        self.table[index] = HashTableEntry(key, value)
 
-        # search for value 
-        cur = self.table[index].head
-
-        while cur is not None:
-           # if key already exists 
-            if cur.value == entry.value:
-                #overwrite
-                self.table[index] = entry
-            # else insert new entry at head
-            else:
-                entry.next = self.table[index].head
-                self.table[index].head = entry  
-                self.table[index] = entry
-
-            cur = cur.next              
-
-        print(self.table)
 
 
     def delete(self, key):
@@ -143,7 +115,6 @@ class HashTable:
         entry = self.table[index]
         if entry.key == key:
             self.table[index] = None
-            self.count -= 1
         else:
             return f'key not found'
 
@@ -179,32 +150,30 @@ class HashTable:
 
 
 if __name__ == "__main__":
-    ht = HashTable(2)
+    ht = HashTable(8)
 
     # print(ht.get_num_slots())
     # print(ht.get_load_factor())
     # print(ht.hash_index('Antonio'))
     # print(ht.table)
 
-    ht.put("one", "1")
-    ht.put("one", "2")
-    # ht.put("line_1", "'Twas brillig, and the slithy toves")
-    # ht.put("line_2", "Did gyre and gimble in the wabe:")
-    # ht.put("line_3", "All mimsy were the borogoves,")
-    # ht.put("line_4", "And the mome raths outgrabe.")
-    # ht.put("line_5", '"Beware the Jabberwock, my son!')
-    # ht.put("line_6", "The jaws that bite, the claws that catch!")
-    # ht.put("line_7", "Beware the Jubjub bird, and shun")
-    # ht.put("line_8", 'The frumious Bandersnatch!"')
-    # ht.put("line_9", "He took his vorpal sword in hand;")
-    # ht.put("line_10", "Long time the manxome foe he sought--")
-    # ht.put("line_11", "So rested he by the Tumtum tree")
-    # ht.put("line_12", "And stood awhile in thought.")
+    ht.put("line_1", "'Twas brillig, and the slithy toves")
+    ht.put("line_2", "Did gyre and gimble in the wabe:")
+    ht.put("line_3", "All mimsy were the borogoves,")
+    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_5", '"Beware the Jabberwock, my son!')
+    ht.put("line_6", "The jaws that bite, the claws that catch!")
+    ht.put("line_7", "Beware the Jubjub bird, and shun")
+    ht.put("line_8", 'The frumious Bandersnatch!"')
+    ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_10", "Long time the manxome foe he sought--")
+    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_12", "And stood awhile in thought.")
 
     # print(ht.table)
 
 
-    # print(ht.get('line_12'))
+    print(ht.get('line_12'))
 
     # # Test storing beyond capacity
     # for i in range(1, 13):
