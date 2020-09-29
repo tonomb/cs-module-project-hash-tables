@@ -110,25 +110,26 @@ class HashTable:
             self.table[index] = entry
             self.table[index].head = entry
             self.count += 1
+            return
 
         # search for value 
         cur = self.table[index].head
 
         while cur is not None:
            # if key already exists 
-            if cur.value == entry.value:
-                #overwrite
-                self.table[index] = entry
+            if cur.key == entry.key:
+                #overwrite value
+                cur.value = entry.value
+                return
             # else insert new entry at head
             else:
                 entry.next = self.table[index].head
-                self.table[index].head = entry  
                 self.table[index] = entry
+                self.table[index].head = entry  
 
             cur = cur.next              
 
-        print(self.table)
-
+        # print(self.table)
 
     def delete(self, key):
         """
@@ -156,15 +157,20 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # get the index for the key
         index = self.hash_index(key)
-        entry = self.table[index]
-        if entry:
-            return entry.value
-        else:
-            return None
+        # pointer to head at current index
+        cur = self.table[index].head
+        # print('head' , cur)
+        while cur is not None:
+            # print(cur.key, key)
+            if cur.key == key:
+                # print('same')
+                return cur.value
 
+            cur = cur.next
 
+        return None
 
 
     def resize(self, new_capacity):   # When the number of entries in the hash table exceeds the product of the load factor and the current capacity, the hash table is rehashed (that is, internal data structures are rebuilt) so that the hash table has approximately twice the number of buckets.
@@ -186,8 +192,15 @@ if __name__ == "__main__":
     # print(ht.hash_index('Antonio'))
     # print(ht.table)
 
-    ht.put("one", "1")
-    ht.put("one", "2")
+    # ht.put("key-0", "val-0")
+    ht.put('one', 1)
+    # print(ht.get("one"))
+    ht.put('two', 2)
+    # print(ht.get("two"))
+    ht.put('two', 2.2)
+    # print(ht.get("two"))
+    # print(ht.get("one"))
+    
     # ht.put("line_1", "'Twas brillig, and the slithy toves")
     # ht.put("line_2", "Did gyre and gimble in the wabe:")
     # ht.put("line_3", "All mimsy were the borogoves,")
@@ -202,6 +215,8 @@ if __name__ == "__main__":
     # ht.put("line_12", "And stood awhile in thought.")
 
     # print(ht.table)
+    # ht.put("key-0", "new-val-0")
+    # print(ht.get("key-0"))
 
 
     # print(ht.get('line_12'))
