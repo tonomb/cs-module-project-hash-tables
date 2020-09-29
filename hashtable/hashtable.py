@@ -110,6 +110,8 @@ class HashTable:
             self.table[index] = entry
             self.table[index].head = entry
             self.count += 1
+            if self.get_load_factor() > .7:
+                self.resize(self.capacity * 2)
             return
 
         # search for value 
@@ -127,6 +129,8 @@ class HashTable:
                 self.table[index] = entry
                 self.table[index].head = entry 
                 self.count += 1 
+                if self.get_load_factor() > .7:
+                    self.resize(self.capacity * 2)
 
             cur = cur.next              
 
@@ -154,6 +158,7 @@ class HashTable:
             # delete 
             self.table[index] = self.table[index].head
             self.count -= 1
+            # TODO resize if loadfactor is < .2
             return 
         
         # general case 
@@ -165,6 +170,8 @@ class HashTable:
             if cur.key == key:
                 prev.next = cur.next
                 cur.next = None
+                self.count-= 1
+                # TODO resize if loadfactor is < .2
                 return
 
             prev = prev.next
@@ -201,21 +208,46 @@ class HashTable:
         return None
 
 
-    def resize(self, new_capacity):   # When the number of entries in the hash table exceeds the product of the load factor and the current capacity, the hash table is rehashed (that is, internal data structures are rebuilt) so that the hash table has approximately twice the number of buckets.
+    def resize(self, new_capacity):   # the hash table is rehashed (that is, internal data structures are rebuilt) so that the hash table has approximately twice the number of buckets.
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
 
         Implement this.
         """
-        # Your code here
+        print(f'resizing to {new_capacity} ')
 
+        # change capacity to new capacity 
+        self.capacity = new_capacity
+        # create a new table with new capacity 
+        old_table = self.table
+        self.table = [None] * self.capacity
+        self.count = 0
+        # traverse the old table 
+        for bucket in old_table:
+            # check if bucket has values 
+            if bucket is not None:
+                cur = bucket
+                # traverse linked list at bucket
+                while cur is not None:
+                    self.put(cur.key, cur.value)
+                    cur = cur.next
+        
+       
+    
 
 
 if __name__ == "__main__":
     
 
-    ht = HashTable(8)
+    ht = HashTable(2)
+
+    ht.put('one', 1)
+    print(ht.table)
+    
+    ht.put('two', 2)
+    print(ht.table)
+
 
     
     
