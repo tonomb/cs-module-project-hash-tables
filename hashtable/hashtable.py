@@ -125,7 +125,8 @@ class HashTable:
             else:
                 entry.next = self.table[index].head
                 self.table[index] = entry
-                self.table[index].head = entry  
+                self.table[index].head = entry 
+                self.count += 1 
 
             cur = cur.next              
 
@@ -139,15 +140,38 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
         index = self.hash_index(key)
-        entry = self.table[index]
-        if entry.key == key:
-            self.table[index] = None
-            self.count -= 1
-        else:
-            return f'key not found'
 
+        # Special case no value at index
+        if self.table[index] is None:
+            return None
+        
+        # Special case value at head
+        if self.table[index].head.key == key:
+            old_head = self.table[index].head
+            # new head = oldhead.next
+            self.table[index].head = old_head.next
+            # delete 
+            self.table[index] = self.table[index].head
+            self.count -= 1
+            return 
+        
+        # general case 
+
+        prev = self.table[index].head
+        cur = self.table[index].next
+
+        while cur is not None:
+            if cur.key == key:
+                prev.next = cur.next
+                cur.next = None
+                return
+
+            prev = prev.next
+            cur = cur.next
+        # did not find it 
+        return None
+       
 
     def get(self, key):
         """
@@ -160,7 +184,11 @@ class HashTable:
         # get the index for the key
         index = self.hash_index(key)
         # pointer to head at current index
-        cur = self.table[index].head
+        if self.table[index]:
+            cur = self.table[index].head
+        else:
+            return None
+
         # print('head' , cur)
         while cur is not None:
             # print(cur.key, key)
@@ -185,21 +213,11 @@ class HashTable:
 
 
 if __name__ == "__main__":
-    ht = HashTable(2)
+    
 
-    # print(ht.get_num_slots())
-    # print(ht.get_load_factor())
-    # print(ht.hash_index('Antonio'))
-    # print(ht.table)
+    ht = HashTable(8)
 
-    # ht.put("key-0", "val-0")
-    ht.put('one', 1)
-    # print(ht.get("one"))
-    ht.put('two', 2)
-    # print(ht.get("two"))
-    ht.put('two', 2.2)
-    # print(ht.get("two"))
-    # print(ht.get("one"))
+    
     
     # ht.put("line_1", "'Twas brillig, and the slithy toves")
     # ht.put("line_2", "Did gyre and gimble in the wabe:")
