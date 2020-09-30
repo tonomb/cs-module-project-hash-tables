@@ -1,7 +1,30 @@
 def no_dups(s):
-    # Your code here
+    count = {}
+    word = ''
 
+    for c in s:
+        if c.isalpha():
+            c = c.lower()
+            word += c
+        else:
+            if word not in count:
+                count[word] = True
 
+            
+            word = ''
+    if word != '':
+        if word not in count:
+            count[word] = True
+
+    count_list = list(count.items())
+
+    final = ''
+    for i in count_list:
+        final += i[0]
+        final += ' '
+    
+    final = final.strip()
+    return final
 
 if __name__ == "__main__":
     print(no_dups(""))
